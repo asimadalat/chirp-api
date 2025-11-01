@@ -2,12 +2,13 @@
 kotlin = "2.2.10"
 spring-boot = "4.0.0-M3"
 spring-dependency-management = "1.1.7"
-jackson = "2.17.0"
+jackson = "3.0.1"
 jakarta = "6.1.0"
 jwt = "0.12.6"
 okhttp = "4.12.0"
 firebase = "9.5.0"
 kotlinx-coroutines = "1.0.0"
+bouncy-castle = "1.82"
 
 [libraries]
 # Spring Boot Starters
@@ -26,6 +27,8 @@ spring-boot-starter-redis = { module = "org.springframework.boot:spring-boot-sta
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
 spring-boot-autoconfigure = { module = "org.springframework.boot:spring-boot-autoconfigure" }
 spring-boot-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
+bouncycastle-prov = { group = "org.bouncycastle", name = "bcprov-jdk15to18", version.ref = "bouncy-castle" }
+bouncycastle-pkix = { group = "org.bouncycastle", name = "bcpkix-jdk15to18", version.ref = "bouncy-castle" }
 
 # JWT
 jakarta-servlet-api = { module = "jakarta.servlet:jakarta.servlet-api", version.ref = "jakarta" }
@@ -34,7 +37,7 @@ jwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jwt" }
 jwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jwt" }
 
 # Jackson
-jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 
 # Kotlin
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }

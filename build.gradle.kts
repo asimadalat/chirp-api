@@ -1,5 +1,3 @@
-import jdk.internal.jshell.tool.resources.version
-
 plugins {
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.spring) apply false
@@ -9,7 +7,7 @@ plugins {
 }
 
 group = "com.asimorphic"
-version = "0.0.1-MILESTONE"
+version = "0.0.1-SNAPSHOT"
 
 subprojects {
     group = rootProject.group

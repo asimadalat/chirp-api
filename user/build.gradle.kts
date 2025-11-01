@@ -9,6 +9,8 @@ version = "unspecified"
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://repo.spring.io/milestone") }
+    maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
 dependencies {
@@ -16,6 +18,9 @@ dependencies {
 
     implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.validation)
+
+    implementation(libs.bouncycastle.prov)
+    implementation(libs.bouncycastle.pkix)
 
     implementation(libs.spring.boot.starter.data.jpa)
     runtimeOnly(libs.postgresql)
@@ -25,7 +30,4 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(21)
 }
