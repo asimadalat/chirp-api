@@ -2,6 +2,7 @@ package com.asimorphic.chirp.api.controllers
 
 import com.asimorphic.chirp.api.dto.AuthenticatedUserDto
 import com.asimorphic.chirp.api.dto.LoginRequest
+import com.asimorphic.chirp.api.dto.RefreshRequest
 import com.asimorphic.chirp.api.dto.RegisterRequest
 import com.asimorphic.chirp.api.dto.UserDto
 import com.asimorphic.chirp.api.mappers.toAuthenticatedUserDto
@@ -31,5 +32,15 @@ class AuthController(private val authService: AuthService) {
             email = body.email,
             password = body.password
         ).toAuthenticatedUserDto()
+    }
+
+    @PostMapping("/refresh")
+    fun refresh(@RequestBody body: RefreshRequest): AuthenticatedUserDto {
+        return authService.refresh(body.refreshToken).toAuthenticatedUserDto()
+    }
+
+    @PostMapping("/logout")
+    fun logout(@RequestBody body: RefreshRequest) {
+        authService.logout(body.refreshToken)
     }
 }
