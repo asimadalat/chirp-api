@@ -5,3 +5,5 @@ spring:
 
 jwt:
   expiration-minutes: 1000
+
+debug: true

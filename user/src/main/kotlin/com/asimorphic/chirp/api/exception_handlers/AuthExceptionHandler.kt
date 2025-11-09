@@ -1,5 +1,6 @@
 package com.asimorphic.chirp.api.exception_handlers
 
+import com.asimorphic.chirp.domain.exception.EmailNotVerifiedException
 import com.asimorphic.chirp.domain.exception.InvalidCredentialsException
 import com.asimorphic.chirp.domain.exception.InvalidTokenException
 import com.asimorphic.chirp.domain.exception.UserAlreadyExistsException
@@ -17,6 +18,10 @@ class AuthExceptionHandler {
     @ExceptionHandler(UserAlreadyExistsException::class)
     @ResponseStatus(HttpStatus.CONFLICT)
     fun onUserAlreadyExists(ex: UserAlreadyExistsException) = mapOf("code" to "USER_EXISTS", "message" to ex.message)
+
+    @ExceptionHandler(EmailNotVerifiedException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun onEmailNotVerified(ex: EmailNotVerifiedException) = mapOf("code" to "EMAIL_NOT_VERIFIED", "message" to ex.message)
 
     @ExceptionHandler(UserNotFoundException::class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

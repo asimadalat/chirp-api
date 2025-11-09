@@ -1,5 +1,6 @@
 package com.asimorphic.chirp.service.auth
 
+import com.asimorphic.chirp.domain.exception.EmailNotVerifiedException
 import com.asimorphic.chirp.domain.exception.InvalidCredentialsException
 import com.asimorphic.chirp.domain.exception.InvalidTokenException
 import com.asimorphic.chirp.domain.exception.UserAlreadyExistsException
@@ -24,20 +25,25 @@ class AuthService(
     private val userRepository: UserRepository,
     private val passwordHasher: PasswordHasher,
     private val jwtService: JwtService,
-    private val refreshTokenRepository: RefreshTokenRepository
+    private val refreshTokenRepository: RefreshTokenRepository,
+    private val emailVerificationService: EmailVerificationService
 ) {
+    @Transactional
     fun register(email: String, username: String, password: String): User {
-        val user = userRepository.findByEmailOrUsername(email.trim(), username.trim())
+        val emailTrimmed = email.trim()
+        val user = userRepository.findByEmailOrUsername(emailTrimmed, username.trim())
         if (user != null)
             throw UserAlreadyExistsException()
 
-        val savedUser = userRepository.save(
+        val savedUser = userRepository.saveAndFlush(
             UserEntity(
-            email = email.trim(),
+            email = emailTrimmed,
             username = username.trim(),
             hashedPassword = passwordHasher.hash(password)
             )
         ).toUser()
+
+        val token = emailVerificationService.createVerificationToken(emailTrimmed)
 
         return savedUser
     }
@@ -46,6 +52,9 @@ class AuthService(
         val user = userRepository.findByEmail(email.trim()) ?: throw InvalidCredentialsException()
         if (!passwordHasher.verify(password, user.hashedPassword))
             throw InvalidCredentialsException()
+
+        if (!user.hasVerifiedEmail)
+            throw EmailNotVerifiedException()
 
         return user.id?.let { userId ->
             val accessToken = jwtService.generateAccessToken(userId)
