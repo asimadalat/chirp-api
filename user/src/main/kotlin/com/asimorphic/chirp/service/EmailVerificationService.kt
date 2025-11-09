@@ -1,4 +1,4 @@
-package com.asimorphic.chirp.service.auth
+package com.asimorphic.chirp.service
 
 import com.asimorphic.chirp.domain.exception.InvalidTokenException
 import com.asimorphic.chirp.domain.exception.UserNotFoundException
@@ -24,18 +24,10 @@ class EmailVerificationService(
     @Transactional
     fun createVerificationToken(email: String): EmailVerificationToken {
         val userEntity = userRepository.findByEmail(email) ?: throw UserNotFoundException()
-        val existingUnused = emailVerificationTokenRepository.findByUserAndUsedAtIsNull(user = userEntity)
-
-        val now = Instant.now()
-        val usedTokens = existingUnused.map {
-            it.apply {
-                this.usedAt = now
-            }
-        }
-        emailVerificationTokenRepository.saveAll(usedTokens)
+        emailVerificationTokenRepository.invalidateActiveTokensForUser(userEntity)
 
         val token = EmailVerificationTokenEntity(
-            expiresAt = now.plus(expiryHours, ChronoUnit.HOURS),
+            expiresAt = Instant.now().plus(expiryHours, ChronoUnit.HOURS),
             user = userEntity
         )
 

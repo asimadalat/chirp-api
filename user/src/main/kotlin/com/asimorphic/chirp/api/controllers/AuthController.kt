@@ -1,14 +1,18 @@
 package com.asimorphic.chirp.api.controllers
 
 import com.asimorphic.chirp.api.dto.AuthenticatedUserDto
+import com.asimorphic.chirp.api.dto.EmailRequest
 import com.asimorphic.chirp.api.dto.LoginRequest
+import com.asimorphic.chirp.api.dto.PasswordChangeRequest
+import com.asimorphic.chirp.api.dto.PasswordResetRequest
 import com.asimorphic.chirp.api.dto.RefreshRequest
 import com.asimorphic.chirp.api.dto.RegisterRequest
 import com.asimorphic.chirp.api.dto.UserDto
 import com.asimorphic.chirp.api.mappers.toAuthenticatedUserDto
 import com.asimorphic.chirp.api.mappers.toUserDto
-import com.asimorphic.chirp.service.auth.AuthService
-import com.asimorphic.chirp.service.auth.EmailVerificationService
+import com.asimorphic.chirp.service.AuthService
+import com.asimorphic.chirp.service.EmailVerificationService
+import com.asimorphic.chirp.service.PasswordResetService
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,7 +23,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("api/auth")
-class AuthController(private val authService: AuthService, private val emailVerificationService: EmailVerificationService) {
+class AuthController(
+    private val authService: AuthService,
+    private val emailVerificationService: EmailVerificationService,
+    private val resetService: PasswordResetService
+) {
     @PostMapping("/register")
     fun register(@Valid @RequestBody body: RegisterRequest): UserDto {
         return authService.register(
@@ -50,5 +58,23 @@ class AuthController(private val authService: AuthService, private val emailVeri
     @GetMapping("/verify-email")
     fun verifyEmail(@RequestParam token: String) {
         emailVerificationService.verifyEmailToken(token)
+    }
+
+    @PostMapping("/forgot-password")
+    fun resetPassword(@Valid @RequestBody body: EmailRequest) {
+        resetService.requestPasswordReset(body.email)
+    }
+
+    @PostMapping("/reset-password")
+    fun resetPassword(@Valid @RequestBody body: PasswordResetRequest) {
+        resetService.resetPassword(
+            token = body.token,
+            newPassword = body.newPassword
+        )
+    }
+
+    @PostMapping("/change-password")
+    fun changePassword(@Valid @RequestBody body: PasswordChangeRequest) {
+        // Make authenticated endpoint, extract user ID from JWT, call service
     }
 }

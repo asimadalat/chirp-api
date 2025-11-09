@@ -1,4 +1,4 @@
-package com.asimorphic.chirp.service.auth
+package com.asimorphic.chirp.service
 
 import com.asimorphic.chirp.domain.exception.EmailNotVerifiedException
 import com.asimorphic.chirp.domain.exception.InvalidCredentialsException
@@ -14,9 +14,12 @@ import com.asimorphic.chirp.infra.database.mappers.toUser
 import com.asimorphic.chirp.infra.database.repositories.RefreshTokenRepository
 import com.asimorphic.chirp.infra.database.repositories.UserRepository
 import com.asimorphic.chirp.infra.security.PasswordHasher
+import com.asimorphic.chirp.service.EmailVerificationService
+import com.asimorphic.chirp.service.JwtService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.security.MessageDigest
 import java.time.Instant
 import java.util.Base64
 
@@ -37,9 +40,9 @@ class AuthService(
 
         val savedUser = userRepository.saveAndFlush(
             UserEntity(
-            email = emailTrimmed,
-            username = username.trim(),
-            hashedPassword = passwordHasher.hash(password)
+                email = emailTrimmed,
+                username = username.trim(),
+                hashedPassword = passwordHasher.hash(password)
             )
         ).toUser()
 
@@ -123,7 +126,7 @@ class AuthService(
     }
 
     private fun hashToken(token: String): String {
-        val digest = java.security.MessageDigest.getInstance("SHA-256")
+        val digest = MessageDigest.getInstance("SHA-256")
         val hashBytes = digest.digest(token.encodeToByteArray())
         return Base64.getEncoder().encodeToString(hashBytes)
     }

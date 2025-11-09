@@ -1,4 +1,4 @@
-package com.asimorphic.chirp.service.auth
+package com.asimorphic.chirp.service
 
 import com.asimorphic.chirp.domain.exception.InvalidTokenException
 import com.asimorphic.chirp.domain.model.UserId
@@ -17,7 +17,7 @@ class JwtService(
     @param:Value(value = "\${jwt.expiration-minutes}") private val expirationMinutes: Int) {
 
     private val secretKey = Keys.hmacShaKeyFor(
-        Base64.decode(source = secretBase64)
+        Base64.Default.decode(source = secretBase64)
     )
     private val accessTokenValidityMs = expirationMinutes * 60 * 1000L
     val refreshTokenValidityMs = 30 * 24 * 60 * 60 * 1000L

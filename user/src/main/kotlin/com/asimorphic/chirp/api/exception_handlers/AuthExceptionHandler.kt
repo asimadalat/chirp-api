@@ -3,6 +3,7 @@ package com.asimorphic.chirp.api.exception_handlers
 import com.asimorphic.chirp.domain.exception.EmailNotVerifiedException
 import com.asimorphic.chirp.domain.exception.InvalidCredentialsException
 import com.asimorphic.chirp.domain.exception.InvalidTokenException
+import com.asimorphic.chirp.domain.exception.SamePasswordException
 import com.asimorphic.chirp.domain.exception.UserAlreadyExistsException
 import com.asimorphic.chirp.domain.exception.UserNotFoundException
 import org.springframework.http.HttpStatus
@@ -22,6 +23,10 @@ class AuthExceptionHandler {
     @ExceptionHandler(EmailNotVerifiedException::class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     fun onEmailNotVerified(ex: EmailNotVerifiedException) = mapOf("code" to "EMAIL_NOT_VERIFIED", "message" to ex.message)
+
+    @ExceptionHandler(SamePasswordException::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun onSamePassword(ex: SamePasswordException) = mapOf("code" to "SAME_PASSWORD", "message" to ex.message)
 
     @ExceptionHandler(UserNotFoundException::class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
