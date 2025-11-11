@@ -22,6 +22,7 @@ dependencies {
     implementation(libs.bouncycastle.prov)
     implementation(libs.bouncycastle.pkix)
 
+    implementation(libs.spring.boot.starter.data.redis)
     implementation(libs.spring.boot.starter.data.jpa)
     runtimeOnly(libs.postgresql)
 
