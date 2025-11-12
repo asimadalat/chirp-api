@@ -3,6 +3,7 @@ package com.asimorphic.chirp.api.exception_handlers
 import com.asimorphic.chirp.domain.exception.EmailNotVerifiedException
 import com.asimorphic.chirp.domain.exception.InvalidCredentialsException
 import com.asimorphic.chirp.domain.exception.InvalidTokenException
+import com.asimorphic.chirp.domain.exception.RateLimitException
 import com.asimorphic.chirp.domain.exception.SamePasswordException
 import com.asimorphic.chirp.domain.exception.UserAlreadyExistsException
 import com.asimorphic.chirp.domain.exception.UserNotFoundException
@@ -23,6 +24,10 @@ class AuthExceptionHandler {
     @ExceptionHandler(EmailNotVerifiedException::class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     fun onEmailNotVerified(ex: EmailNotVerifiedException) = mapOf("code" to "EMAIL_NOT_VERIFIED", "message" to ex.message)
+
+    @ExceptionHandler(RateLimitException::class)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    fun onRateLimitExceeded(ex: RateLimitException) = mapOf("code" to "RATE_LIMIT_EXCEEDED", "message" to ex.message)
 
     @ExceptionHandler(SamePasswordException::class)
     @ResponseStatus(HttpStatus.CONFLICT)

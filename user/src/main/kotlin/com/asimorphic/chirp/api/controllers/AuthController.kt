@@ -10,6 +10,7 @@ import com.asimorphic.chirp.api.dto.RegisterRequest
 import com.asimorphic.chirp.api.dto.UserDto
 import com.asimorphic.chirp.api.mappers.toAuthenticatedUserDto
 import com.asimorphic.chirp.api.mappers.toUserDto
+import com.asimorphic.chirp.infra.rate_limiters.EmailRateLimiter
 import com.asimorphic.chirp.service.AuthService
 import com.asimorphic.chirp.service.EmailVerificationService
 import com.asimorphic.chirp.service.PasswordResetService
@@ -26,7 +27,8 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val authService: AuthService,
     private val emailVerificationService: EmailVerificationService,
-    private val resetService: PasswordResetService
+    private val resetService: PasswordResetService,
+    private val emailRateLimiter: EmailRateLimiter
 ) {
     @PostMapping("/register")
     fun register(@Valid @RequestBody body: RegisterRequest): UserDto {
@@ -53,6 +55,13 @@ class AuthController(
     @PostMapping("/logout")
     fun logout(@RequestBody body: RefreshRequest) {
         authService.logout(body.refreshToken)
+    }
+
+    @PostMapping("/resend-verification")
+    fun resendVerification(@Valid @RequestBody body: EmailRequest) {
+        emailRateLimiter.withRateLimit(body.email) {
+            emailVerificationService.resendVerificationEmail(body.email)
+        }
     }
 
     @GetMapping("/verify-email")
