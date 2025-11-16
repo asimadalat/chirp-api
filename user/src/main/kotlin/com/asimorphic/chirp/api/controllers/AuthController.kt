@@ -11,6 +11,7 @@ import com.asimorphic.chirp.api.dto.RegisterRequest
 import com.asimorphic.chirp.api.dto.UserDto
 import com.asimorphic.chirp.api.mappers.toAuthenticatedUserDto
 import com.asimorphic.chirp.api.mappers.toUserDto
+import com.asimorphic.chirp.api.utils.requestUserId
 import com.asimorphic.chirp.infra.rate_limiters.EmailRateLimiter
 import com.asimorphic.chirp.service.AuthService
 import com.asimorphic.chirp.service.EmailVerificationService
@@ -91,6 +92,10 @@ class AuthController(
 
     @PostMapping("/change-password")
     fun changePassword(@Valid @RequestBody body: PasswordChangeRequest) {
-        // Make authenticated endpoint, extract user ID from JWT, call service
+        resetService.changePassword(
+            userId = requestUserId,
+            oldPassword = body.oldPassword,
+            newPassword = body.newPassword
+        )
     }
 }

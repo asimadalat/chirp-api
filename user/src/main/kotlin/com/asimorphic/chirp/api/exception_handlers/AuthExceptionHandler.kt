@@ -5,6 +5,7 @@ import com.asimorphic.chirp.domain.exception.InvalidCredentialsException
 import com.asimorphic.chirp.domain.exception.InvalidTokenException
 import com.asimorphic.chirp.domain.exception.RateLimitException
 import com.asimorphic.chirp.domain.exception.SamePasswordException
+import com.asimorphic.chirp.domain.exception.UnauthorizedException
 import com.asimorphic.chirp.domain.exception.UserAlreadyExistsException
 import com.asimorphic.chirp.domain.exception.UserNotFoundException
 import org.springframework.http.HttpStatus
@@ -24,6 +25,10 @@ class AuthExceptionHandler {
     @ExceptionHandler(EmailNotVerifiedException::class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     fun onEmailNotVerified(ex: EmailNotVerifiedException) = mapOf("code" to "EMAIL_NOT_VERIFIED", "message" to ex.message)
+
+    @ExceptionHandler(UnauthorizedException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun onUnauthorized(ex: UnauthorizedException) = mapOf("code" to "UNAUTHORIZED", "message" to ex.message)
 
     @ExceptionHandler(RateLimitException::class)
     @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)

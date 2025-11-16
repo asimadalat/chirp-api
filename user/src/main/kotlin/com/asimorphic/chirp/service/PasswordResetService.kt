@@ -76,7 +76,7 @@ class PasswordResetService(
     fun changePassword(userId: UserId, oldPassword: String, newPassword: String) {
         val user = userRepository.findByIdOrNull(userId) ?: throw UserNotFoundException()
 
-        if (passwordHasher.verify(oldPassword, user.hashedPassword))
+        if (!passwordHasher.verify(oldPassword, user.hashedPassword))
             throw InvalidCredentialsException()
 
         if (oldPassword == newPassword)
