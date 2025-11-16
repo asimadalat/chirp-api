@@ -4,7 +4,7 @@ import com.asimorphic.chirp.domain.exception.InvalidCredentialsException
 import com.asimorphic.chirp.domain.exception.InvalidTokenException
 import com.asimorphic.chirp.domain.exception.SamePasswordException
 import com.asimorphic.chirp.domain.exception.UserNotFoundException
-import com.asimorphic.chirp.domain.model.UserId
+import com.asimorphic.chirp.domain.type.UserId
 import com.asimorphic.chirp.infra.database.entities.PasswordResetTokenEntity
 import com.asimorphic.chirp.infra.database.repositories.PasswordResetTokenRepository
 import com.asimorphic.chirp.infra.database.repositories.RefreshTokenRepository

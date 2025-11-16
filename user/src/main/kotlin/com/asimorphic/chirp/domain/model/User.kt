@@ -1,8 +1,6 @@
 package com.asimorphic.chirp.domain.model
 
-import java.util.UUID
-
-typealias UserId = UUID
+import com.asimorphic.chirp.domain.type.UserId
 
 data class User(
     val id: UserId,

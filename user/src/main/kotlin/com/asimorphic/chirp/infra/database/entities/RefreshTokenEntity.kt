@@ -1,6 +1,6 @@
 package com.asimorphic.chirp.infra.database.entities
 
-import com.asimorphic.chirp.domain.model.UserId
+import com.asimorphic.chirp.domain.type.UserId
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue

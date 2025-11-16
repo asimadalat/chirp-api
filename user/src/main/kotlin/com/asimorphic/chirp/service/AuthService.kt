@@ -7,15 +7,13 @@ import com.asimorphic.chirp.domain.exception.UserAlreadyExistsException
 import com.asimorphic.chirp.domain.exception.UserNotFoundException
 import com.asimorphic.chirp.domain.model.AuthenticatedUser
 import com.asimorphic.chirp.domain.model.User
-import com.asimorphic.chirp.domain.model.UserId
+import com.asimorphic.chirp.domain.type.UserId
 import com.asimorphic.chirp.infra.database.entities.RefreshTokenEntity
 import com.asimorphic.chirp.infra.database.entities.UserEntity
 import com.asimorphic.chirp.infra.database.mappers.toUser
 import com.asimorphic.chirp.infra.database.repositories.RefreshTokenRepository
 import com.asimorphic.chirp.infra.database.repositories.UserRepository
 import com.asimorphic.chirp.infra.security.PasswordHasher
-import com.asimorphic.chirp.service.EmailVerificationService
-import com.asimorphic.chirp.service.JwtService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

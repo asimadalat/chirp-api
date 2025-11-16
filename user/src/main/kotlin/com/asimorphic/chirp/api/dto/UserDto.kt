@@ -1,6 +1,6 @@
 package com.asimorphic.chirp.api.dto
 
-import com.asimorphic.chirp.domain.model.UserId
+import com.asimorphic.chirp.domain.type.UserId
 
 data class UserDto(
     val id: UserId,

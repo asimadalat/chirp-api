@@ -1,7 +1,7 @@
 package com.asimorphic.chirp.service
 
 import com.asimorphic.chirp.domain.exception.InvalidTokenException
-import com.asimorphic.chirp.domain.model.UserId
+import com.asimorphic.chirp.domain.type.UserId
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
