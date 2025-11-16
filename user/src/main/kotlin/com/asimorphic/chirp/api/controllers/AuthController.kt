@@ -1,5 +1,6 @@
 package com.asimorphic.chirp.api.controllers
 
+import com.asimorphic.chirp.api.annotations.IpRateLimit
 import com.asimorphic.chirp.api.dto.AuthenticatedUserDto
 import com.asimorphic.chirp.api.dto.EmailRequest
 import com.asimorphic.chirp.api.dto.LoginRequest
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.util.concurrent.TimeUnit
 
 @RestController
 @RequestMapping("api/auth")
@@ -31,6 +33,7 @@ class AuthController(
     private val emailRateLimiter: EmailRateLimiter
 ) {
     @PostMapping("/register")
+    @IpRateLimit(5, 1L, TimeUnit.HOURS)
     fun register(@Valid @RequestBody body: RegisterRequest): UserDto {
         return authService.register(
             email = body.email,
@@ -40,6 +43,7 @@ class AuthController(
     }
 
     @PostMapping("/login")
+    @IpRateLimit(5, 1L, TimeUnit.HOURS)
     fun login(@RequestBody body: LoginRequest): AuthenticatedUserDto {
         return authService.login(
             email = body.email,
@@ -48,6 +52,7 @@ class AuthController(
     }
 
     @PostMapping("/refresh")
+    @IpRateLimit(5, 1L, TimeUnit.HOURS)
     fun refresh(@RequestBody body: RefreshRequest): AuthenticatedUserDto {
         return authService.refresh(body.refreshToken).toAuthenticatedUserDto()
     }
@@ -58,6 +63,7 @@ class AuthController(
     }
 
     @PostMapping("/resend-verification")
+    @IpRateLimit(5, 1L, TimeUnit.HOURS)
     fun resendVerification(@Valid @RequestBody body: EmailRequest) {
         emailRateLimiter.withRateLimit(body.email) {
             emailVerificationService.resendVerificationEmail(body.email)
@@ -70,6 +76,7 @@ class AuthController(
     }
 
     @PostMapping("/forgot-password")
+    @IpRateLimit(5, 1L, TimeUnit.HOURS)
     fun resetPassword(@Valid @RequestBody body: EmailRequest) {
         resetService.requestPasswordReset(body.email)
     }

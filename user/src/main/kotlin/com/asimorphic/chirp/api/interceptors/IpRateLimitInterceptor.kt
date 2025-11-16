@@ -16,7 +16,7 @@ import java.time.Duration
 class IpRateLimitInterceptor(
     private val ipRateLimiter: IpRateLimiter,
     private val ipResolver: IpResolver,
-    @param:Value($$"${chirp.rate-limit.ip.apply-limit")
+    @param:Value($$"${chirp.rate-limit.ip.apply-limit}")
     private val applyLimit: Boolean
 ): HandlerInterceptor {
 
