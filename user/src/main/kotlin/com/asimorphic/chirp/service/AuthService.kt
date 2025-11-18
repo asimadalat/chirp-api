@@ -1,5 +1,6 @@
 package com.asimorphic.chirp.service
 
+import com.asimorphic.chirp.domain.events.user.UserEvent
 import com.asimorphic.chirp.domain.exception.EmailNotVerifiedException
 import com.asimorphic.chirp.domain.exception.InvalidCredentialsException
 import com.asimorphic.chirp.domain.exception.InvalidTokenException
@@ -13,6 +14,7 @@ import com.asimorphic.chirp.infra.database.entities.UserEntity
 import com.asimorphic.chirp.infra.database.mappers.toUser
 import com.asimorphic.chirp.infra.database.repositories.RefreshTokenRepository
 import com.asimorphic.chirp.infra.database.repositories.UserRepository
+import com.asimorphic.chirp.infra.message_queue.EventPublisher
 import com.asimorphic.chirp.infra.security.PasswordHasher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -27,7 +29,8 @@ class AuthService(
     private val passwordHasher: PasswordHasher,
     private val jwtService: JwtService,
     private val refreshTokenRepository: RefreshTokenRepository,
-    private val emailVerificationService: EmailVerificationService
+    private val emailVerificationService: EmailVerificationService,
+    private val eventPublisher: EventPublisher
 ) {
     @Transactional
     fun register(email: String, username: String, password: String): User {
@@ -45,6 +48,15 @@ class AuthService(
         ).toUser()
 
         val token = emailVerificationService.createVerificationToken(emailTrimmed)
+
+        eventPublisher.publish(
+            event = UserEvent.Created(
+                userId = savedUser.id,
+                email = savedUser.email,
+                username = savedUser.username,
+                verificationToken= token.token
+            )
+        )
 
         return savedUser
     }
