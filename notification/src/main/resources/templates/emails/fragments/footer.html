@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<body>
+<div th:fragment="footer"
+     style="
+        background-color: #000000;
+        padding: 28px 20px;
+        text-align: center;
+        border-top: 1px solid rgba(255,255,255,0.08);
+     ">
+    <p style="
+        color: #7d858f;
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.6;
+    ">
+        © <span th:text="${#dates.year(#dates.createNow())}">2025</span>
+        Asimorphic GmbH • All Rights Reserved
+    </p>
+</div>
+</body>
+</html>

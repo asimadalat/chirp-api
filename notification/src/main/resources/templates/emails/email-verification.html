@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{emails/layout :: layout(~{::content}, 'Verify your Chirp account')}" lang="en">
+<body>
+<div th:fragment="content" class="content-padding"
+     style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+    <h1 style="margin-top: 0; font-size: 26px; font-weight: 700; color: #111;">
+        Welcome to Chirp, <span th:text="${username}">User</span>!
+    </h1>
+
+    <p style="font-size: 16px; color: #444;">
+        Thanks for joining <strong>Chirp</strong> — we're excited to have you here!
+    </p>
+
+    <p style="font-size: 16px; color: #555;">
+        To activate your account, please confirm your email address by tapping the button below:
+    </p>
+
+    <div style="text-align: center; margin: 32px 0;">
+        <a th:href="${verificationUrl}" style="background: linear-gradient(90deg, #0066ff, #4a8dff); color: #ffffff;
+            padding: 14px 34px; border-radius: 10px; text-decoration: none; display: inline-block; font-size: 16px;
+            font-weight: 600;">
+            Verify Email
+        </a>
+    </div>
+
+    <div style="margin-top: 40px; padding-top: 28px; border-top: 1px solid #e6e6e6; color: #6c6c6c; font-size: 15px;
+        line-height: 1.6;">
+        <p><strong>Why verify?</strong></p>
+        <p>Email verification ensures this address belongs to you and helps keep your account secure.</p>
+
+        <p style="margin-top: 18px;">
+            This link is valid for <strong>24 hours</strong>. If it expires, you can request a new one anytime.
+        </p>
+
+        <p style="margin-top: 18px;">
+            Didn’t create a Chirp account? No worries — you can safely ignore this email.
+        </p>
+    </div>
+</div>
+</body>
+</html>
