@@ -88,6 +88,7 @@ class RabbitMqConfig {
             this.setConnectionFactory(connectionFactory)
             this.setTransactionManager(transactionManager)
             this.setChannelTransacted(true)
+            this.setMessageConverter(messageConverter())
         }
     }
 }

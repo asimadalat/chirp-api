@@ -93,14 +93,14 @@
     </style>
 </head>
 
-<body>
+<body th:fragment="layout(content, subject)">
 
 <div class="email-wrapper">
 
     <div class="email-container">
 
         <!-- HEADER -->
-        <div th:replace="~{emails/header :: header}"></div>
+        <div th:replace="~{emails/fragments/header :: header}"></div>
 
         <!-- CONTENT -->
         <div class="content-section">
@@ -108,7 +108,7 @@
         </div>
 
         <!-- FOOTER -->
-        <div th:replace="~{emails/footer :: footer}"></div>
+        <div th:replace="~{emails/fragments/footer :: footer}"></div>
 
     </div>
 </div>

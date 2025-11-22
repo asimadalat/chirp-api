@@ -1,5 +1,6 @@
 package com.asimorphic.chirp.service
 
+import com.asimorphic.chirp.domain.events.user.UserEvent
 import com.asimorphic.chirp.domain.exception.InvalidCredentialsException
 import com.asimorphic.chirp.domain.exception.InvalidTokenException
 import com.asimorphic.chirp.domain.exception.SamePasswordException
@@ -9,6 +10,7 @@ import com.asimorphic.chirp.infra.database.entities.PasswordResetTokenEntity
 import com.asimorphic.chirp.infra.database.repositories.PasswordResetTokenRepository
 import com.asimorphic.chirp.infra.database.repositories.RefreshTokenRepository
 import com.asimorphic.chirp.infra.database.repositories.UserRepository
+import com.asimorphic.chirp.infra.message_queue.EventPublisher
 import com.asimorphic.chirp.infra.security.PasswordHasher
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import kotlin.math.exp
 
 @Service
 class PasswordResetService(
@@ -25,7 +28,8 @@ class PasswordResetService(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val passwordHasher: PasswordHasher,
     @param:Value($$"${chirp.email.password-reset.expiry-minutes}")
-    private val expiryMinutes: Long
+    private val expiryMinutes: Long,
+    private val eventPublisher: EventPublisher
 ) {
     @Transactional
     fun requestPasswordReset(email: String) {
@@ -38,7 +42,15 @@ class PasswordResetService(
         )
         passwordResetTokenRepository.save(token)
 
-        // Send email with reset link to user registered email address
+        eventPublisher.publish(
+            event = UserEvent.RequestResetPassword(
+                userId = user.id!!,
+                email = user.email,
+                username = user.username,
+                passwordResetToken = token.token,
+                expiresInMinutes = expiryMinutes
+            )
+        )
     }
 
     @Transactional

@@ -2,14 +2,19 @@ spring:
   jpa:
     hibernate:
       ddl-auto:
+  mail:
+    host: smtp.mailgun.org
+    username: asimorphic@sandbox125ccabd00464f7f8e7bc98596f20ce8.mailgun.org
 
 jwt:
   expiration-minutes: 15
 
 nginx:
-  require-proxy:
+  require-proxy: true
 
 chirp:
+  email:
+    url: "https://chirp.asimorphic.com"
   rate-limit:
     ip:
       apply-limit: true
