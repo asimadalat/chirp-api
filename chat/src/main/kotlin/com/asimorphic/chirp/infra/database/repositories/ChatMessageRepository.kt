@@ -11,7 +11,7 @@ import java.time.Instant
 
 interface ChatMessageRepository: JpaRepository<ChatMessageEntity, ChatMessageId> {
     @Query("""SELECT m FROM ChatMessageEntity m WHERE m.chatId = :chatId AND m.createdAt < :before
-        ORDER BY m.createdAT DESC""")
+        ORDER BY m.createdAt DESC""")
     fun findByChatIdBefore(chatId: ChatId, before: Instant, pageable: Pageable): Slice<ChatMessageEntity>
 
 
