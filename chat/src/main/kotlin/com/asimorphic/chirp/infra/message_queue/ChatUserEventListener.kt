@@ -1,8 +1,7 @@
-package com.asimorphic.chirp.infra.messages
+package com.asimorphic.chirp.infra.message_queue
 
 import com.asimorphic.chirp.domain.events.user.UserEvent
 import com.asimorphic.chirp.domain.models.ChatParticipant
-import com.asimorphic.chirp.infra.message_queue.MessageQueues
 import com.asimorphic.chirp.service.ChatParticipantService
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.RabbitListener
