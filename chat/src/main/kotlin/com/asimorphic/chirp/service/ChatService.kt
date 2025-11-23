@@ -1,5 +1,7 @@
 package com.asimorphic.chirp.service
 
+import com.asimorphic.chirp.api.dto.ChatMessageDto
+import com.asimorphic.chirp.api.mappers.toChatMessageDto
 import com.asimorphic.chirp.domain.exception.ChatNotFoundException
 import com.asimorphic.chirp.domain.exception.ChatParticipantNotFoundException
 import com.asimorphic.chirp.domain.exception.ForbiddenException
@@ -14,9 +16,11 @@ import com.asimorphic.chirp.infra.database.mappers.toChatMessage
 import com.asimorphic.chirp.infra.database.repositories.ChatMessageRepository
 import com.asimorphic.chirp.infra.database.repositories.ChatParticipantRepository
 import com.asimorphic.chirp.infra.database.repositories.ChatRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 
 @Service
 class ChatService(
@@ -44,6 +48,17 @@ class ChatService(
                 participants = setOf(creator) + otherParticipants
             )
         ).toChat(lastMessage = null)
+    }
+
+    fun getChatMessages(chatId: ChatId, before: Instant?, pageSize: Int): List<ChatMessageDto> {
+        return chatMessageRepository
+            .findByChatIdBefore(
+                chatId = chatId,
+                before = before ?: Instant.now(),
+                pageable = PageRequest.of(0, pageSize)
+            ).content.asReversed().map {
+                it.toChatMessage().toChatMessageDto()
+            }
     }
 
     @Transactional
