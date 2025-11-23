@@ -6,6 +6,7 @@ import com.asimorphic.chirp.api.mappers.toChatDto
 import com.asimorphic.chirp.api.utils.requestUserId
 import com.asimorphic.chirp.service.ChatService
 import jakarta.validation.Valid
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/chat")
 class ChatController(private val chatService: ChatService) {
 
+    @PostMapping
     fun createChat(@Valid @RequestBody body: CreateChatRequestDto): ChatDto {
         return chatService.createChat(
             creatorId = requestUserId,
