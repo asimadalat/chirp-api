@@ -1,4 +1,4 @@
-package com.asimorphic.chirp.security
+package com.asimorphic.chirp.api
 
 import com.asimorphic.chirp.api.config.JwtAuthFilter
 import jakarta.servlet.DispatcherType

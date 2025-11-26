@@ -6,6 +6,7 @@ import com.asimorphic.chirp.api.dto.ChatMessageDto
 import com.asimorphic.chirp.api.dto.CreateChatRequestDto
 import com.asimorphic.chirp.api.mappers.toChatDto
 import com.asimorphic.chirp.api.utils.requestUserId
+import com.asimorphic.chirp.domain.exception.ChatNotFoundException
 import com.asimorphic.chirp.domain.type.ChatId
 import com.asimorphic.chirp.service.ChatService
 import jakarta.validation.Valid
@@ -30,6 +31,23 @@ class ChatController(private val chatService: ChatService) {
             creatorId = requestUserId,
             otherUserIds = body.otherUserIds.toSet()
         ).toChatDto()
+    }
+
+    @GetMapping("/{chatId}")
+    fun getChat(
+        @PathVariable ("chatId") chatId: ChatId
+    ): ChatDto {
+        return chatService.getChatById(
+            chatId = chatId,
+            requestUserId = requestUserId
+        )?.toChatDto() ?: throw ChatNotFoundException()
+    }
+
+    @GetMapping
+    fun getChatsForUser(): List<ChatDto> {
+        return chatService.getChatsByUser(
+            userId = requestUserId
+        ).map { it.toChatDto() }
     }
 
     @PostMapping("/{chatId}/add")

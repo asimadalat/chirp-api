@@ -1,4 +1,4 @@
-package com.asimorphic.chirp.config
+package com.asimorphic.chirp.api
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
