@@ -115,6 +115,32 @@ class ChatWebSocketHandler(
         logger.debug("Received pong from session with ID ${session.id}")
     }
 
+    override fun handleTransportError(session: WebSocketSession, exception: Throwable) {
+        logger.error("Transport error for session with ID ${session.id}", exception)
+        session.close(CloseStatus.SERVER_ERROR.withReason("Transport error."))
+    }
+
+    override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
+        connectionLock.write {
+            sessions.remove(session.id)?.let { userSession ->
+                val userId = userSession.userId
+                userToSessions.compute(userId) { _, sessions ->
+                    sessions?.apply { remove(session.id) }
+                        ?.takeIf { it.isNotEmpty() }
+                }
+
+                userChatIds[userId]?.forEach { chatId ->
+                    chatToSessions.compute(chatId) { _, sessions ->
+                        sessions?.apply { remove(session.id) }
+                            ?.takeIf { it.isNotEmpty() }
+                    }
+                }
+
+                logger.info("Websocket connection closed for user with ID $userId")
+            }
+        }
+    }
+
     @Scheduled(fixedDelay = PING_INTERVAL_MS)
     fun pingClients() {
         val currentTime = System.currentTimeMillis()
