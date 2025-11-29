@@ -7,11 +7,13 @@ import com.asimorphic.chirp.api.dto.websocket.IncomingWebSocketMessage
 import com.asimorphic.chirp.api.dto.websocket.IncomingWebSocketMessageType
 import com.asimorphic.chirp.api.dto.websocket.OutgoingWebSocketMessage
 import com.asimorphic.chirp.api.dto.websocket.OutgoingWebSocketMessageType
+import com.asimorphic.chirp.api.dto.websocket.ProfilePictureUpdatedDto
 import com.asimorphic.chirp.api.dto.websocket.SendMessageDto
 import com.asimorphic.chirp.api.mappers.toChatMessageDto
 import com.asimorphic.chirp.domain.event.ChatParticipantLeftEvent
 import com.asimorphic.chirp.domain.event.ChatParticipantsJoinedEvent
 import com.asimorphic.chirp.domain.event.MessageDeletedEvent
+import com.asimorphic.chirp.domain.event.ProfilePictureUpdatedEvent
 import com.asimorphic.chirp.domain.type.ChatId
 import com.asimorphic.chirp.domain.type.UserId
 import com.asimorphic.chirp.service.ChatMessageService
@@ -171,7 +173,7 @@ class ChatWebSocketHandler(
                         try {
                             session.close(CloseStatus.GOING_AWAY.withReason("Ping timeout"))
                         } catch (ex: Exception) {
-                            logger.error("Could not close sessions for session with ID ${session.id}")
+                            logger.error("Could not close sessions for session with ID ${session.id}", ex)
                         }
                     }
                 }
@@ -308,6 +310,45 @@ class ChatWebSocketHandler(
         )
     }
 
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    fun onProfilePictureUpdated(event: ProfilePictureUpdatedEvent) {
+        val userChats = connectionLock.read {
+            userChatIds[event.userId]?.toList() ?: emptyList()
+        }
+
+        val dto = ProfilePictureUpdatedDto(
+            userId = event.userId,
+            newUrl = event.newUrl
+        )
+
+        val sessionIds = mutableSetOf<String>()
+        userChats.forEach { chatId ->
+            connectionLock.read {
+                chatToSessions[chatId]?.let {sessions ->
+                    sessionIds.addAll(sessions)
+                }
+            }
+        }
+
+        val webSocketMessage = OutgoingWebSocketMessage(
+            type = OutgoingWebSocketMessageType.PROFILE_PIC_UPDATED,
+            payload = objectMapper.writeValueAsString(dto)
+        )
+        val messageJson = objectMapper.writeValueAsString(webSocketMessage)
+
+        sessionIds.forEach { sessionId ->
+            val userSession = connectionLock.read {
+                sessions[sessionId]
+            } ?: return@forEach
+            try {
+                if (userSession.session.isOpen)
+                    userSession.session.sendMessage(TextMessage(messageJson))
+            } catch (ex: Exception) {
+                logger.error("Failed to send profile picture update to session with ID $sessionId", ex)
+            }
+        }
+    }
+
     private fun broadcastToChat(chatId: ChatId, message: OutgoingWebSocketMessage) {
         val chatSessions = connectionLock.read { chatToSessions[chatId]?.toList() ?: emptyList() }
         chatSessions.forEach { sessionId ->
@@ -354,7 +395,7 @@ class ChatWebSocketHandler(
         try {
             session.sendMessage(TextMessage(webSocketMessage))
         } catch (ex: Exception) {
-            logger.warn("Could not send error message.")
+            logger.warn("Could not send error message", ex)
         }
     }
 

@@ -12,8 +12,8 @@ spring:
       timeout: 2000ms
 
   datasource:
-    url: jdbc:postgresql://aws-1-eu-west-2.pooler.supabase.com:5432/postgres #jdbc:postgresql://db.qvrjpcfgrggrgnjzpkou.supabase.co:5432/postgres
-    username: postgres.qvrjpcfgrggrgnjzpkou #postgres
+    url: jdbc:postgresql://aws-1-eu-west-2.pooler.supabase.com:5432/postgres #jdbc:postgresql://:5432/postgres
+    username: postgres.qvrjpcfgrggrgnjzpkou #postgresdb.qvrjpcfgrggrgnjzpkou.supabase.co
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
@@ -91,3 +91,7 @@ nginx:
     - "::1"
     - "172.17.0.0/16"
     - "10.0.0.5/32"
+
+supabase:
+  url: "aws-1-eu-west-2.pooler.supabase.com"  #"db.qvrjpcfgrggrgnjzpkou.supabase.co"
+  service-key: ${SUPABASE_SERVICE_KEY}
