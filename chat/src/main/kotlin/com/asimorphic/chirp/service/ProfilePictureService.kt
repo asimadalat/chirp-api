@@ -2,11 +2,13 @@ package com.asimorphic.chirp.service
 
 import com.asimorphic.chirp.domain.event.ProfilePictureUpdatedEvent
 import com.asimorphic.chirp.domain.exception.ChatParticipantNotFoundException
+import com.asimorphic.chirp.domain.exception.InvalidProfilePictureException
 import com.asimorphic.chirp.domain.models.ProfilePicUploadCredential
 import com.asimorphic.chirp.domain.type.UserId
 import com.asimorphic.chirp.infra.database.repositories.ChatParticipantRepository
 import com.asimorphic.chirp.infra.storage.SupabaseStorageService
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -14,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ProfilePictureService(
+    @param:Value($$"${supabase.url}")
+    private val supabaseUrl: String,
+
     private val supabaseStorageService: SupabaseStorageService,
     private val chatParticipantRepository: ChatParticipantRepository,
     private val applicationEventPublisher: ApplicationEventPublisher
@@ -54,6 +59,9 @@ class ProfilePictureService(
 
     @Transactional
     fun confirmProfilePictureUpload(userId: UserId, publicUrl: String) {
+        if (!publicUrl.startsWith("https://$supabaseUrl"))
+            throw InvalidProfilePictureException("Invalid profile picture URL")
+
         val participant = chatParticipantRepository.findByIdOrNull(userId)
             ?: throw ChatParticipantNotFoundException(userId)
 
