@@ -1,6 +1,6 @@
 package com.asimorphic.chirp.domain.model
 
-import com.asimorphic.chirp.domain.enums.Platform
+import com.asimorphic.chirp.domain.model.enums.Platform
 import com.asimorphic.chirp.domain.type.UserId
 import java.time.Instant
 

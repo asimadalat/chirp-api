@@ -1,6 +1,6 @@
 package com.asimorphic.chirp.infra.push_notification
 
-import com.asimorphic.chirp.domain.enums.Platform
+import com.asimorphic.chirp.domain.model.enums.Platform
 import com.asimorphic.chirp.domain.model.DeviceToken
 import com.asimorphic.chirp.domain.model.PushNotification
 import com.asimorphic.chirp.domain.model.PushNotificationSendResult
