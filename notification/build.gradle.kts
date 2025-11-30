@@ -19,6 +19,7 @@ dependencies {
     implementation(libs.spring.boot.starter.amqp)
     implementation(libs.spring.boot.starter.thymeleaf)
     implementation(libs.spring.boot.starter.mail)
+    implementation(libs.firebase.admin.sdk)
 
     testImplementation(kotlin("test"))
 }
