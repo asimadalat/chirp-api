@@ -93,5 +93,5 @@ nginx:
     - "10.0.0.5/32"
 
 supabase:
-  url: "aws-1-eu-west-2.pooler.supabase.com"  #"db.qvrjpcfgrggrgnjzpkou.supabase.co"
+  url: "https://qvrjpcfgrggrgnjzpkou.supabase.co"
   service-key: ${SUPABASE_SERVICE_KEY}

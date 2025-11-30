@@ -20,7 +20,6 @@ class SupabaseRestClientConfig(
             .builder()
             .baseUrl(supabaseUrl)
             .defaultHeader("Authorization", "Bearer $supabaseKey")
-            .defaultHeader("Content-Type", "application/json")
             .build()
     }
 }

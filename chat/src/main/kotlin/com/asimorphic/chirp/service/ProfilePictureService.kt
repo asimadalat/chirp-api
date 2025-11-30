@@ -59,7 +59,7 @@ class ProfilePictureService(
 
     @Transactional
     fun confirmProfilePictureUpload(userId: UserId, publicUrl: String) {
-        if (!publicUrl.startsWith("https://$supabaseUrl"))
+        if (!publicUrl.startsWith(supabaseUrl))
             throw InvalidProfilePictureException("Invalid profile picture URL")
 
         val participant = chatParticipantRepository.findByIdOrNull(userId)
