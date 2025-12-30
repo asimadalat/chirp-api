@@ -84,6 +84,11 @@ chirp:
     password-reset:
       expiry-minutes: 15
 
+  security:
+    api-key:
+      header: x-api-key
+      value: ${CHIRP_API_KEY}
+
 nginx:
   require-proxy: true
   trusted-ips:

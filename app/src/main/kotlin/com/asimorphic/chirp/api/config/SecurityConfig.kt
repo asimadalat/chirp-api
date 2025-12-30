@@ -1,6 +1,6 @@
-package com.asimorphic.chirp.api
+package com.asimorphic.chirp.api.config
 
-import com.asimorphic.chirp.api.config.JwtAuthFilter
+import com.asimorphic.chirp.api.filter.ApiKeyFilter
 import jakarta.servlet.DispatcherType
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,7 +15,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig {
 
     @Bean
-    fun filterChain(httpSecurity: HttpSecurity, jwtAuthFilter: JwtAuthFilter): SecurityFilterChain {
+    fun filterChain(
+        httpSecurity: HttpSecurity,
+        jwtAuthFilter: JwtAuthFilter,
+        apiKeyFilter: ApiKeyFilter
+    ): SecurityFilterChain {
         return httpSecurity
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
@@ -33,6 +37,7 @@ class SecurityConfig {
                     .anyRequest()
                     .authenticated()
             }
+            .addFilterBefore(apiKeyFilter, UsernamePasswordAuthenticationFilter::class.java)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
             .exceptionHandling { configurer ->
                 configurer
