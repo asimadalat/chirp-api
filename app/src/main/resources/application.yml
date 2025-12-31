@@ -97,6 +97,9 @@ nginx:
     - "172.17.0.0/16"
     - "10.0.0.5/32"
 
+server:
+  port: 8080
+
 supabase:
   url: "https://qvrjpcfgrggrgnjzpkou.supabase.co"
   service-key: ${SUPABASE_SERVICE_KEY}
