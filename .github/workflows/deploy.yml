@@ -1,0 +1,46 @@
+name: Deploy Chirp Production API
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+
+      - name: Configure SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Add Server to Known Hosts
+        run: |
+          ssh-keyscan -H 91.99.141.128 > ~/.ssh/known_hosts
+
+      - name: Create Firebase Admin SDK Credentials
+        run: |
+          mkdir -p app/src/main/resources/firebase
+          echo "${{ secrets.FIREBASE_CREDENTIALS_BASE64 }}" | base64 -d > app/src/main/resources/firebase/chirp-firebase-adminsdk.json
+
+      - name: Build JAR Executable
+        run: |
+          ./gradlew :app:bootJar
+
+      - name: Deploy JAR Executable to Remote Server
+        run: |
+          JAR_NAME="app-0.0.1-SNAPSHOT.jar"
+          LOCAL_JAR_PATH="app/build/libs/$JAR_NAME
+          REMOTE_SERVER="admin@91.99.141.128"
+          REMOTE_JAR_DIR="/opt/chirp"
+          
+          rsync -avz -e "ssh" $LOCAL_JAR_PATH $REMOTE_SERVER:$REMOTE_JAR_DIR/$JAR_NAME
+          
+          ssh $REMOTE_SERVER << EOF
+            mv $REMOTE_JAR_DIR/$JAR_NAME $REMOTE_JAR_DIR/chirp.jar
+            sudo systemctl restart chirp.service
+          EOF
