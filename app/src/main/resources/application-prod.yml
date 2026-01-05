@@ -14,7 +14,7 @@ nginx:
 
 chirp:
   email:
-    url: "https://chirp.asimorphic.com"
+    url: "https://api.chirp.asimorphic.dev"
   rate-limit:
     ip:
       apply-limit: true

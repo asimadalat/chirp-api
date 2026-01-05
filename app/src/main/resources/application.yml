@@ -78,7 +78,7 @@ jwt:
 
 chirp:
   email:
-    sender: chirp@asimorphic.com
+    sender: no-reply@chirp.asimorphic.dev
     verification:
       expiry-hours: 24
     password-reset:
