@@ -1,11 +1,10 @@
-# Chirp API — Scalable Chat Messaging Backend
-
+# Chirp API `1.0.1`
 
 > This repository is public for **portfolio and educational review purposes only**.  
 > It is **not open source**. No permission is granted to use, copy, modify, deploy,
 > or redistribute this software without explicit written consent from the author.
 
-**Chirp API** is a production-ready, scalable chat messaging backend powering the Chirp application.  
+**Chirp API** is a production-ready chat messaging backend powering the Chirp application.  
 It provides secure authentication, 1-to-1 and group messaging, profile pictures, real-time updates, push notifications, and email workflows.
 
 Built with Spring Boot + Kotlin, deployed on Hetzner, Chirp API has been implemented as a modular monolith:
