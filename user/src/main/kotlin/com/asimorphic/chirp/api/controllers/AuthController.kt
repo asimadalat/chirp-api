@@ -44,7 +44,7 @@ class AuthController(
     }
 
     @PostMapping("/login")
-    @IpRateLimit(5, 1L, TimeUnit.HOURS)
+    @IpRateLimit(100, 1L, TimeUnit.HOURS)
     fun login(@RequestBody body: LoginRequest): AuthenticatedUserDto {
         return authService.login(
             email = body.email,
