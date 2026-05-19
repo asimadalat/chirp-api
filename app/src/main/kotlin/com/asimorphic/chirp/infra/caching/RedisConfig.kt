@@ -28,6 +28,7 @@ class RedisConfig {
 
         val objectMapper = JsonMapper.builder()
             .addModule(kotlinModule())
+            .findAndAddModules()
             .polymorphicTypeValidator(polymorphicTypeValidator)
             .activateDefaultTyping(polymorphicTypeValidator, DefaultTyping.NON_FINAL)
             .build()
@@ -40,7 +41,8 @@ class RedisConfig {
                 )
             )
 
-        return RedisCacheManager.builder(connectionFactory).cacheDefaults(cacheConfig)
+        return RedisCacheManager.builder(connectionFactory)
+            .cacheDefaults(cacheConfig)
             .withCacheConfiguration(
                 "messages",
                 cacheConfig.entryTtl(Duration.ofMinutes(30))

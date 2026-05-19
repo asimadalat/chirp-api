@@ -4,10 +4,10 @@ spring:
 
   data:
     redis:
-      host: "redis-10205.crce204.eu-west-2-3.ec2.cloud.redislabs.com"
+      host: "redis-17672.crce287.eu-west-2-2.ec2.cloud.redislabs.com"
       password: ${REDIS_PASSWORD}
       username: "default"
-      port: 10205
+      port: 17672
       connect-timeout: 5000ms
       timeout: 2000ms
 
@@ -54,10 +54,10 @@ spring:
   rabbitmq:
     host: seal.lmq.cloudamqp.com
     password: ${RABBITMQ_PASSWORD}
-    username: iieixhjf
+    username: jjixgetw
     ssl:
       enabled: true
-    virtual-host: iieixhjf
+    virtual-host: jjixgetw
     listener:
       simple:
         acknowledge-mode: auto

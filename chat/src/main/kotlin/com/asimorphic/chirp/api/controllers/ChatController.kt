@@ -10,7 +10,6 @@ import com.asimorphic.chirp.domain.exception.ChatNotFoundException
 import com.asimorphic.chirp.domain.type.ChatId
 import com.asimorphic.chirp.service.ChatService
 import jakarta.validation.Valid
-import org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -81,5 +80,9 @@ class ChatController(private val chatService: ChatService) {
             before = before,
             pageSize = pageSize
         )
+    }
+
+    companion object {
+        private const val DEFAULT_PAGE_SIZE = 20
     }
 }

@@ -18,8 +18,6 @@ import com.asimorphic.chirp.infra.database.mappers.toChatMessage
 import com.asimorphic.chirp.infra.database.repositories.ChatMessageRepository
 import com.asimorphic.chirp.infra.database.repositories.ChatParticipantRepository
 import com.asimorphic.chirp.infra.database.repositories.ChatRepository
-import org.apache.catalina.User
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -76,12 +74,13 @@ class ChatService(
         ).toChat(lastMessage = null)
     }
 
-    @Cacheable(
-        value = ["messages"],
-        key = "#chatId",
-        condition = "#before == null && #pageSize <= 40",
-        sync = true
-    )
+//    TODO: fix Redis issue
+//    @Cacheable(
+//        value = ["messages"],
+//        key = "#chatId",
+//        condition = "#before == null && #pageSize <= 40",
+//        sync = true
+//    )
     fun getChatMessages(chatId: ChatId, before: Instant?, pageSize: Int): List<ChatMessageDto> {
         return chatMessageRepository
             .findByChatIdBefore(
