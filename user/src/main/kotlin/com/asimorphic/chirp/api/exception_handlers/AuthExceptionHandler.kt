@@ -22,7 +22,7 @@ class AuthExceptionHandler {
     fun onUserAlreadyExists(ex: UserAlreadyExistsException) = mapOf("code" to "USER_EXISTS", "message" to ex.message)
 
     @ExceptionHandler(EmailNotVerifiedException::class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     fun onEmailNotVerified(ex: EmailNotVerifiedException) = mapOf("code" to "EMAIL_NOT_VERIFIED", "message" to ex.message)
 
     @ExceptionHandler(RateLimitException::class)
