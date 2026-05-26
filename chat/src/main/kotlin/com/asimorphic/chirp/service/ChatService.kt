@@ -2,6 +2,7 @@ package com.asimorphic.chirp.service
 
 import com.asimorphic.chirp.api.dto.ChatMessageDto
 import com.asimorphic.chirp.api.mappers.toChatMessageDto
+import com.asimorphic.chirp.domain.event.ChatCreatedEvent
 import com.asimorphic.chirp.domain.event.ChatParticipantLeftEvent
 import com.asimorphic.chirp.domain.event.ChatParticipantsJoinedEvent
 import com.asimorphic.chirp.domain.exception.ChatNotFoundException
@@ -66,12 +67,19 @@ class ChatService(
         val creator = chatParticipantRepository.findByIdOrNull(creatorId)
             ?: throw ChatParticipantNotFoundException(creatorId)
 
-        return chatRepository.save(
+        return chatRepository.saveAndFlush(
             ChatEntity(
                 creator = creator,
                 participants = setOf(creator) + otherParticipants
             )
-        ).toChat(lastMessage = null)
+        ).toChat(lastMessage = null).also { entity ->
+            applicationEventPublisher.publishEvent(
+                ChatCreatedEvent(
+                    chatId = entity.id,
+                    participantIds = entity.participants.map { it.userId }
+                )
+            )
+        }
     }
 
 //    TODO: fix Redis issue

@@ -10,6 +10,7 @@ import com.asimorphic.chirp.api.dto.websocket.OutgoingWebSocketMessageType
 import com.asimorphic.chirp.api.dto.websocket.ProfilePictureUpdatedDto
 import com.asimorphic.chirp.api.dto.websocket.SendMessageDto
 import com.asimorphic.chirp.api.mappers.toChatMessageDto
+import com.asimorphic.chirp.domain.event.ChatCreatedEvent
 import com.asimorphic.chirp.domain.event.ChatParticipantLeftEvent
 import com.asimorphic.chirp.domain.event.ChatParticipantsJoinedEvent
 import com.asimorphic.chirp.domain.event.MessageDeletedEvent
@@ -258,19 +259,10 @@ class ChatWebSocketHandler(
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun onJoinChat(event: ChatParticipantsJoinedEvent) {
-        connectionLock.write {
-            event.userIds.forEach { userId ->
-                userChatIds.compute(userId) {_, chatIds ->
-                    (chatIds ?: mutableSetOf()).apply { add(event.chatId) }
-                }
-
-                userToSessions[userId]?.forEach { sessionId ->
-                    chatToSessions.compute(event.chatId) { _, sessions ->
-                        (sessions ?: mutableSetOf()).apply { add(sessionId) }
-                    }
-                }
-            }
-        }
+        updateChatForUsers(
+            chatId = event.chatId,
+            userIds = event.userIds.toList()
+        )
 
         broadcastToChat(
             chatId = event.chatId,
@@ -282,6 +274,12 @@ class ChatWebSocketHandler(
             )
         )
     }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    fun onCreateChat(event: ChatCreatedEvent) = updateChatForUsers(
+        chatId = event.chatId,
+        userIds = event.participantIds
+    )
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun onLeaveChat(event: ChatParticipantLeftEvent) {
@@ -347,6 +345,23 @@ class ChatWebSocketHandler(
                 logger.error("Failed to send profile picture update to session with ID $sessionId", ex)
             }
         }
+    }
+
+    private fun updateChatForUsers(chatId: ChatId, userIds: List<UserId>) {
+        connectionLock.write {
+            userIds.forEach { userId ->
+                userChatIds.compute(userId) {_, chatIds ->
+                    (chatIds ?: mutableSetOf()).apply { add(chatId) }
+                }
+
+                userToSessions[userId]?.forEach { sessionId ->
+                    chatToSessions.compute(chatId) { _, sessions ->
+                        (sessions ?: mutableSetOf()).apply { add(sessionId) }
+                    }
+                }
+            }
+        }
+
     }
 
     private fun broadcastToChat(chatId: ChatId, message: OutgoingWebSocketMessage) {
