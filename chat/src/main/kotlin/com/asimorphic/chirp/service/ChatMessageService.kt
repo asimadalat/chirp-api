@@ -29,6 +29,7 @@ class ChatMessageService(
     private val chatMessageRepository: ChatMessageRepository,
     private val chatParticipantRepository: ChatParticipantRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
+    private val chatMessageCacheEvictor: ChatMessageCacheEvictor,
     private val eventPublisher: EventPublisher
 ) {
 
@@ -86,10 +87,6 @@ class ChatMessageService(
             )
         )
 
-        evictCachedMessages(message.chatId)
+        chatMessageCacheEvictor.evictCachedMessages(message.chatId)
     }
-
-    // Cache eviction helper
-    @CacheEvict(value = ["messages"], key = "#chatId")
-    fun evictCachedMessages(chatId: ChatId) { }
 }
